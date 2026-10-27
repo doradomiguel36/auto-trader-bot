@@ -1,0 +1,10 @@
+.env
+data/
+node_modules/
+dist/
+.npm-cache/
+.venv/
+.pip-cache/
+__pycache__/
+.pytest_cache/
+.pytest-tmp/

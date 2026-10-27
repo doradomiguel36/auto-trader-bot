@@ -1,0 +1,12 @@
+{
+  "name": "Example signal trader",
+  "signals": [
+    {
+      "id": "example-btc-buy-001",
+      "symbol": "BTCUSDT",
+      "side": "BUY",
+      "notionalUsd": 100,
+      "timestamp": "2026-10-27T00:00:00Z"
+    }
+  ]
+}
