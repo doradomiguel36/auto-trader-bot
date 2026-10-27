@@ -2,21 +2,44 @@
 
 TradePilot is a local Vue 3 trading dashboard with a FastAPI backend. It shows Coins.ph Spot USDT quotes and OANDA forex quotes when configured, supports paper and explicitly armed live orders, and runs a moving-average crossover strategy while the server stays online. Trader profile import remains a paper-only draft; automatic copy feeds are deferred.
 
-## Run
+## Setup (Windows PowerShell)
 
-Requires Python 3.11+ and Node.js 20.19+ or 22.12+.
+1. Install Python 3.11 or newer and Node.js 20.19+ (20.x) or 22.12+. Node.js includes npm. Check that both are available:
+
+   ```powershell
+   python --version
+   node --version
+   npm.cmd --version
+   ```
+
+2. Open PowerShell in the repository root (the folder containing `requirements.txt` and `package.json`). Create a virtual environment and install the Python and frontend dependencies:
+
+   ```powershell
+   python -m venv .venv
+   .venv\Scripts\python.exe -m pip install -r requirements.txt
+   npm.cmd ci
+   ```
+
+3. Build the dashboard, then start the backend:
+
+   ```powershell
+   npm.cmd run build
+   .venv\Scripts\python.exe -m backend
+   ```
+
+4. Open <http://127.0.0.1:8787> in your browser. The dashboard starts in paper mode. Check that it loads and review **Risk controls** before placing a paper order. Stop the server with `Ctrl+C` in its PowerShell window.
+
+Venue credentials are optional for paper trading. To connect an account, copy the example file once, then edit `.env` with credentials for only the venues you use:
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements.txt
-npm.cmd install
-npm.cmd run build
-.venv\Scripts\python.exe -m backend
+Copy-Item .env.example .env
 ```
 
-Open <http://127.0.0.1:8787>. The FastAPI service serves the built frontend and binds to loopback only. State is saved in `data/state.json`, which is ignored by Git. Keep the computer awake and the FastAPI process running for unattended trading; closing the browser does not stop the engine. Run only one process. A local process lock prevents a second instance from using the same state directory.
+Skip that command if `.env` already exists so you do not replace your credentials. Coins.ph uses `COINS_API_KEY` and `COINS_API_SECRET`; OANDA uses `OANDA_ACCOUNT_ID`, `OANDA_TOKEN`, and `OANDA_ENV` (`practice` or `live`). Restart the backend after changing `.env`. Keep `.env` private; it is ignored by Git. Live orders require a configured live venue and explicit activation in the dashboard.
 
-For frontend development, run the FastAPI service and `npm.cmd run dev` in separate terminals. Vite proxies `/api` to port 8787. Rebuild with `npm.cmd run build` before using the frontend served by FastAPI.
+The FastAPI service serves the built frontend and binds to loopback only. State is saved in `data/state.json`, which is ignored by Git. Keep the computer awake and the FastAPI process running for unattended trading; closing the browser does not stop the engine. Run only one process. A local process lock prevents a second instance from using the same state directory. Set `PORT` in `.env` if port 8787 is unavailable, then open the matching `127.0.0.1` URL.
+
+For frontend development, run the FastAPI service and `npm.cmd run dev` in separate terminals. Vite proxies `/api` to port 8787, so leave `PORT=8787` for this workflow. Rebuild with `npm.cmd run build` before using the frontend served by FastAPI.
 
 ## API documentation
 
